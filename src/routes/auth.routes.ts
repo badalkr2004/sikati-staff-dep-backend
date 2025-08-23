@@ -12,7 +12,7 @@ const registerSchema = insertUserSchema.extend({
 });
 
 router.post("/register", validateBody(registerSchema), AuthController.register);
-router.post("/login", validateBody(loginSchema), AuthController.login);
+router.post("/login", AuthController.login);
 router.post("/logout", authenticate, AuthController.logout);
 router.get("/profile", authenticate, AuthController.profile);
 

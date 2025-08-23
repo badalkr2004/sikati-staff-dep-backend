@@ -8,10 +8,13 @@ import {
   timestamp,
   pgEnum,
   integer,
+  date,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 export const roleEnum = pgEnum("role", ["admin", "member"]);
+
+// Emergency contact enums
 export const urgencyEnum = pgEnum("urgency", [
   "immediate",
   "same-day",
@@ -38,6 +41,36 @@ export const workTypeEnum = pgEnum("work_type", [
 ]);
 
 export const contactEnum = pgEnum("contact", ["call", "text", "email"]);
+
+// Quote Enums
+
+export const eventTypeEnum = pgEnum("event_type", [
+  "government",
+  "corporate",
+  "private",
+  "construction",
+  "security",
+  "hospitality",
+  "other",
+]);
+
+export const quoteDurationEnum = pgEnum("quote_duration", [
+  "1day",
+  "2-3days",
+  "1week",
+  "2weeks",
+  "1month",
+  "ongoing",
+]);
+
+export const budgetRangeEnum = pgEnum("budget_range", [
+  "under5k",
+  "5k-10k",
+  "10k-25k",
+  "25k-50k",
+  "over50k",
+  "discuss",
+]);
 
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -93,6 +126,35 @@ export const emergency = pgTable("emergency", {
   specialRequirements: text("special_requirements"),
 
   contact: contactEnum("contact").notNull(),
+
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+// Quote Table
+export const quoteRequests = pgTable("quote_requests", {
+  id: uuid("id")
+    .default(sql`gen_random_uuid()`)
+    .primaryKey(),
+
+  contactName: varchar("contact_name", { length: 255 }).notNull(),
+  companyName: varchar("company_name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull(),
+  phone: varchar("phone", { length: 20 }).notNull(),
+
+  eventType: eventTypeEnum("event_type").notNull(),
+  startDate: date("start_date").notNull(),
+  duration: quoteDurationEnum("duration"),
+
+  staffNeeded: integer("staff_needed").notNull(),
+  location: text("location").notNull(),
+
+  // array of services (text[])
+  services: text("services").array().notNull(),
+
+  specialRequirements: text("special_requirements"),
+  budgetRange: budgetRangeEnum("budget_range"),
 
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()

@@ -60,6 +60,7 @@ export class AuthController {
   static async login(req: Request, res: Response) {
     try {
       const { email, password } = req.body;
+      console.log(email, password);
 
       // Find user
       const existingUser = await db
@@ -101,7 +102,7 @@ export class AuthController {
         expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
       });
 
-      return res.json({
+      res.json({
         message: "Login successful",
         user: {
           id: user.id,

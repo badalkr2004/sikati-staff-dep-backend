@@ -22,6 +22,20 @@
       "when": 1755891865699,
       "tag": "0002_abnormal_unicorn",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1755893512217,
+      "tag": "0003_powerful_mad_thinker",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1755893627477,
+      "tag": "0004_rainy_edwin_jarvis",
+      "breakpoints": true
     }
   ]
 }

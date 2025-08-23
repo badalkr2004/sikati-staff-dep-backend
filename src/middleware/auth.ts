@@ -49,7 +49,7 @@ export async function authenticate(
   }
 }
 
-const authorize = (roles: string[]) => {
+export const authorize = (roles: string[]) => {
   return (req: AuthRequest, res: Response, next: NextFunction) => {
     if (!req.user) {
       return res.status(403).json({ error: "Access denied" });
