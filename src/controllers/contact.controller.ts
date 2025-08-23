@@ -5,8 +5,35 @@ import { emergency, quoteRequests } from "../db/schema";
 import z from "zod";
 import { quoteFormSchema } from "../validation/quote.validation";
 import { eq } from "drizzle-orm";
+import {
+  notifyContact,
+  notifyEmergency,
+  notifyQuote,
+} from "../utils/mailTemplate";
 
 export class ContactController {
+  static async handleContactForm(req: AuthRequest, res: Response) {
+    const { firstName, lastName, company, email, phone, message } = req.body;
+    console.log(req.body);
+    try {
+      // Validate and process the contact form data
+      await notifyContact({
+        name: `${firstName} ${lastName}`,
+        email,
+        phone,
+        message,
+        company,
+      });
+      res.json({
+        success: true,
+        message: "Contact form submitted successfully",
+      });
+    } catch (error) {
+      console.error("Error handling contact form:", error);
+      res.status(500).json({ success: false, error: "Internal server error" });
+    }
+  }
+
   static async handleEmergencyContact(req: AuthRequest, res: Response) {
     const {
       name,
@@ -47,6 +74,21 @@ export class ContactController {
           error: "Failed to create emergency contact",
         });
       }
+      await notifyEmergency({
+        name,
+        phone,
+        email,
+        company,
+        urgency,
+        staffNeeded,
+        location,
+        startDateTime: new Date(startDateTime),
+        duration,
+        workType,
+        emergencyDescription,
+        specialRequirements,
+        contact,
+      });
 
       res.json({ success: true, message: "Emergency contact form submitted" });
     } catch (error) {
@@ -188,6 +230,21 @@ export class ContactController {
           budgetRange: parsedData.budgetRange,
         })
         .returning();
+
+      await notifyQuote({
+        contactName: parsedData.contactName,
+        companyName: parsedData.companyName,
+        email: parsedData.email,
+        phone: parsedData.phone,
+        eventType: parsedData.eventType,
+        startDate: parsedData.startDate,
+        duration: parsedData.duration,
+        staffNeeded: parsedData.staffNeeded as unknown as string,
+        location: parsedData.location,
+        services: parsedData.services,
+        specialRequirements: parsedData.specialRequirements as string,
+        budgetRange: parsedData.budgetRange as string,
+      });
 
       return res.status(201).json({
         success: true,

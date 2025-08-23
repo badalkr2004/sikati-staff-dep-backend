@@ -4,6 +4,8 @@ import { authenticate, authorize } from "../middleware/auth";
 
 const router: Router = Router();
 
+router.post("/", ContactController.handleContactForm);
+
 router.get(
   "/emergency",
   authenticate,
