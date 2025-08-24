@@ -60,7 +60,6 @@ export class AuthController {
   static async login(req: Request, res: Response) {
     try {
       const { email, password } = req.body;
-      console.log(email, password);
 
       // Find user
       const existingUser = await db

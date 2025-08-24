@@ -14,7 +14,7 @@ import {
 export class ContactController {
   static async handleContactForm(req: AuthRequest, res: Response) {
     const { firstName, lastName, company, email, phone, message } = req.body;
-    console.log(req.body);
+
     try {
       // Validate and process the contact form data
       await notifyContact({
